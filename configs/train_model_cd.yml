@@ -1,0 +1,45 @@
+model:
+  hidden_channels: 128
+  #checkpoint: './checkpoints/checkpoint.pt'
+  checkpoint: './logs/train_model_2025_09_15__20_42_46/checkpoints/1000.pt'
+  orig_data_path: ./data/crossdocked_v1.1_rmsd1.0
+  pocket10_path: ./data/crossdocked_v1.1_rmsd1.0_pocket10
+
+  encoder:
+    name: GET
+    hidden_channels: 128
+    edge_channels: 64
+    key_channels: 128
+    num_heads: 4
+    num_interactions: 6
+    cutoff: 10.0
+    knn: 8 # kNN Graph
+    num_filters: 128
+    d_model: 128
+    esm: 'esm2_t33_650M_UR50D'
+
+train:
+  multi_gpu: False
+  seed: 2024
+  batch_size: 2
+  num_workers: 4
+  max_iters: 300_000
+  warm_up: 5000
+  val_freq: 10000
+  max_grad_norm: 400
+  optimizer:
+    type: adam
+    lr: 1.e-4
+    weight_decay: 0
+    beta1: 0.99
+    beta2: 0.999
+  scheduler:
+    type: plateau
+    factor: 0.6
+    patience: 5
+    min_lr: 1.e-5
+
+dataset:
+  name: pl
+  path: ../data/crossdocked_v1.1_rmsd1.0_pocket10/pocket_10
+  split: ../data/crossdocked_v1.1_rmsd1.0_pocket10/split.pt
